@@ -1,0 +1,36 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+Lx, Ly, Lz = 7.0, 3.0, 6.0  # Box dimensions
+nx, ny, nz = 4, 2, 3  # Quantum numbers
+V = Lx * Ly * Lz
+num_points = 9000
+
+
+def psi(x, y, z, Lx, Ly, Lz, nx, ny, nz):
+    return np.sqrt(8 / V) * (np.sin(nx * np.pi * x / Lx) * np.sin(ny * np.pi * y / Ly) * np.sin(nz * np.pi * z / Lz))
+
+
+def generate_probability_cloud(num_points, Lx, Ly, Lz, nx, ny, nz):
+    points = []
+    while len(points) < num_points:
+        x, y, z = np.random.uniform(0, Lx), np.random.uniform(0, Ly), np.random.uniform(0, Lz)
+        prob_density = psi(x, y, z, Lx, Ly, Lz, nx, ny, nz)**2
+        if np.random.uniform(0, 1) < prob_density:
+            points.append((x, y, z))
+    return np.array(points)
+
+
+points = generate_probability_cloud(num_points, Lx, Ly, Lz, nx, ny, nz)
+
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+ax.scatter(points[:, 0], points[:, 1], points[:, 2], alpha=0.1, color='k')
+
+ax.set_xlabel('X axis')
+ax.set_ylabel('Y axis')
+ax.set_zlabel('Z axis')
+ax.set_title('Probability Cloud for a Particle in a 3D Box')
+plt.show()
